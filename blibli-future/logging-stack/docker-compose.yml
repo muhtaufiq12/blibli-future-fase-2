@@ -40,3 +40,5 @@ services:
     networks:
       - overlay-network
       - logging
+    depens_on:
+      - elasticsearch
