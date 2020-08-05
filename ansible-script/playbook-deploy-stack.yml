@@ -15,8 +15,8 @@
       - taufiq12/vote-result
       - taufiq12/vote-worker
       - taufiq12/fluent-bit:simple
-      - elasticsearch:5.3.0
-      - kibana:5.3.0
+      - elasticsearch:7.3.0
+      - kibana:7.3.0
     tags:
       - Pull Image
   
