@@ -1,0 +1,113 @@
+version: '3'
+
+networks:
+  overlay-network:
+    external:
+      name: overlay-network
+  app:
+    external:
+      name: app
+
+services:
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6739"
+    networks:
+      - overlay-network
+    deploy:
+      replicas: 2 
+      update_config: 
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    logging:
+      driver: fluentd
+
+  db:
+    image: postgres:9.4
+    environment:
+      - POSTGRES_USER:"postgres"
+      - POSTGRES_PASSWORD:"postgres"
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - app
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    logging:
+      driver: fluentd
+
+  vote:
+    image: taufiq12/vote-app:latest
+    networks:
+      - overlay-network
+    ports:
+      - 5000:5000
+    depends_on:
+      - redis
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+      restart_policy:
+        condition: on-failure
+    logging:
+      driver: fluentd
+
+  result:
+    image: taufiq12/vote-result:latest
+    ports:
+      - 5001:80
+    networks:
+      - app
+    depends_on:
+      - db
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    logging:
+      driver: fluentd
+
+  worker:
+    image: taufiq12/vote-worker:latest
+    networks:
+      - overlay-network
+      - app
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels: [APP=VOTING]
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      placement:
+        constraints: [node.role == manager]
+    logging:
+      driver: fluentd
+
+  load-balancer:
+    image: nginx:1.13
+    ports:
+      - 80:80
+    volumes:
+      - './nginx-conf/nginx.conf:/etc/nginx/nginx.conf'
+    networks:
+      - overlay-network
+    depends_on:
+      - vote
+    logging:
+        driver: fluentd
+        
+volumes:
+  db-data:

@@ -1,0 +1,42 @@
+version: "3"
+
+networks:
+  overlay-network:
+    external:
+      name: overlay-network
+  logging:
+    external:
+      name: logging
+
+services:
+
+  elasticsearch:
+    image: elasticsearch:5.3.2
+    ports:
+      - 9200:9200
+      - 9300:9300
+    environment:
+      - ES_JAVA_OPTS: "-Xmx512m -Xms512m -Des.enforce.bootstrap.checks=true"
+      - discovery.type: "single-node"
+    networks:
+      - overlay-network
+      - logging
+  
+  fluentbit:
+    image: taufiq12/fluent-bit:simple
+    ports:
+      - 24224:24224
+      - 24224:24224/udp
+    depends_on:
+      - elasticsearch
+    networks:
+      - overlay-network
+      - logging
+  
+  kibana:
+    image: kibana:5.3.2
+    ports:
+      - "5601:5601"
+    networks:
+      - overlay-network
+      - logging

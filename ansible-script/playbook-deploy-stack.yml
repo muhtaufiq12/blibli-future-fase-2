@@ -1,0 +1,41 @@
+---
+- hosts: master
+  become: true
+
+  - name: Pull Image
+    docker_image:
+      name: "{{ item }}"
+      source: pull
+    loop:
+      - redis:alpine
+      - postgres:9.4
+      - nginx:1.13
+      - taufiq12/vote-app
+      - taufiq12/vote-result
+      - taufiq12/vote-worker
+      - taufiq12/fluent-bit:simple
+      - elasticsearch:5.3.0
+      - kibana:5.3.0
+    tags:
+      - Pull Image
+  
+  - name: Deploy logging stack 
+    docker_stack:
+      state: present
+      name: logging
+      compose:
+        - /home/taufiq/blibli-future/logging-stack/docker-compose.yml
+    
+  - name: Deploy app stack 
+    docker_stack:
+      state: present
+      name: app
+      compose:
+        - /home/taufiq/blibli-future/app-stack/docker-compose.yml
+    
+  - name: Deploy monitoring stack 
+    docker_stack:
+      state: present
+      name: monitoring
+      compose:
+        - /home/taufiq/blibli-future/monitoring-stack/docker-compose.yml
