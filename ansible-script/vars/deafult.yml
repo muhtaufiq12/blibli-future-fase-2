@@ -1,4 +1,0 @@
----
-docker_version: 19.03
-docker_swarm_addr: 192.168.56.120
-docker_swarm_port: 2377
