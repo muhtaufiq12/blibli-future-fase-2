@@ -2,6 +2,7 @@
 - hosts: master
   become: true
 
+  tasks:
   - name: Pull Image
     docker_image:
       name: "{{ item }}"
