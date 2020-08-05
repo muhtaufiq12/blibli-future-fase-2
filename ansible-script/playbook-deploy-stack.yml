@@ -23,7 +23,7 @@
   - name: Copy Project
     copy:
       src: /home/taufiq/blibli-future
-      dest: /home/taufiq/blibli-future
+      dest: /home/taufiq/
 
   
   - name: Deploy logging stack 
