@@ -13,8 +13,8 @@ services:
   elasticsearch:
     image: elasticsearch:7.3.0
     ports:
-      - 9200:9200
-      - 9300:9300
+      - "9200:9200"
+      - "9300:9300"
     environment:
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - discovery.type=single-node
@@ -25,8 +25,8 @@ services:
   fluentbit:
     image: taufiq12/fluent-bit:simple
     ports:
-      - 24224:24224
-      - 24224:24224/udp
+      - "24224:24224"
+      - "24224:24224/udp"
     depends_on:
       - elasticsearch
     networks:
