@@ -11,16 +11,13 @@ networks:
 services:
 
   elasticsearch:
-    image: elasticsearch:5.3.2
+    image: elasticsearch:7.3.0
     ports:
       - "9200:9200"
       - "9300:9300"
     environment:
-      xpack.security.enabled: 'false'
-      xpack.monitoring.enabled: 'false'
-      xpack.graph.enabled: 'false'
-      xpack.watcher.enabled: 'false'
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m -Des.enforce.bootstrap.checks=true"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-nodessss
     networks:
       - overlay-network
       - logging
@@ -37,13 +34,9 @@ services:
       - logging
   
   kibana:
-    image: kibana:5.3.2
+    image: kibana:7.3.0
     ports:
       - "5601:5601"
-    environment:
-      ELASTICSEARCH_URL: 'http://elasticsearch:9200'
-      XPACK_SECURITY_ENABLED: 'false'
-      XPACK_MONITORING_ENABLED: 'false'
     networks:
       - overlay-network
       - logging
