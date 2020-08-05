@@ -33,11 +33,6 @@
       name: python-docker
       state: present
   
-  - name: Install Docker Compose module
-    pip:
-      name: docker-compose
-      state: latest
-
   - name: Enable and Run Docker
     systemd:
       name: docker
