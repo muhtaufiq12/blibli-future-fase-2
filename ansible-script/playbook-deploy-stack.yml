@@ -20,6 +20,12 @@
     tags:
       - Pull Image
   
+  - name: Copy Project
+    copy:
+      src: /home/taufiq/blibli-future
+      dest: /home/taufiq/blibli-future
+
+  
   - name: Deploy logging stack 
     docker_stack:
       state: present
