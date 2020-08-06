@@ -54,9 +54,9 @@
     - name: Add nodes
       docker_swarm:
         state: join
-        advertise_addr: "{{ docker_swarm_addr }}"
+        advertise_addr: '192.168.56.122'
         join_token: "{{ docker_worker_token.stdout }}"
-        remote_addrs: [ '192.168.56.121:2377' ]
+        remote_addrs: [ '192.168.56.123:2377' ]
       tags:
         - Join Node
              
